@@ -1,4 +1,5 @@
 package com.madeira.cliente.resources;
+
 import com.madeira.cliente.domain.Cliente;
 import com.madeira.cliente.domain.ServicoPrestado;
 import com.madeira.cliente.dto.ServicoPrestadoDTO;
@@ -22,12 +23,14 @@ import java.util.Optional;
 @RequestMapping("/api/servicos-prestados")
 @RequiredArgsConstructor
 public class ServicoPrestadoResource {
+
     private final ClienteRepository clienteRepository;
     private final ServicoPrestadoRepository repository;
     private final BigDecimalConverter bigDecimalConverter;
+
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public ServicoPrestado salvar(@RequestBody @Valid ServicoPrestadoDTO dto ){
+    public ServicoPrestado salvar(@RequestBody @Valid ServicoPrestadoDTO dto) {
         LocalDate data = LocalDate.parse(dto.getData(), DateTimeFormatter.ofPattern("dd/MM/yyyy"));
         Integer idCliente = dto.getIdCliente();
 
@@ -41,9 +44,9 @@ public class ServicoPrestadoResource {
 
         ServicoPrestado servicoPrestado = new ServicoPrestado();
         servicoPrestado.setDescricao(dto.getDescricao());
-        servicoPrestado.setData( data );
+        servicoPrestado.setData(data);
         servicoPrestado.setCliente(cliente);
-        servicoPrestado.setValor( bigDecimalConverter.converter(dto.getPreco())  );
+        servicoPrestado.setValor(bigDecimalConverter.converter(dto.getPreco()));
 
         return repository.save(servicoPrestado);
     }
@@ -51,8 +54,7 @@ public class ServicoPrestadoResource {
     @GetMapping
     public List<ServicoPrestado> pesquisar(
             @RequestParam(value = "nome", required = false, defaultValue = "") String nome,
-            @RequestParam(value = "mes", required = false) Integer mes
-    ) {
+            @RequestParam(value = "mes", required = false) Integer mes) {
         return repository.findByNomeClienteAndMes("%" + nome + "%", mes);
     }
 }
